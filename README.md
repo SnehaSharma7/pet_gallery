@@ -68,9 +68,11 @@ A responsive React + TypeScript application for browsing, searching, sorting, se
 
 ## API Notes
 
-The app currently requests:
+The app now pulls real animal data from free public APIs:
 
-- `GET /pets`
-- `GET /pets/:id`
+- Cats: `https://api.thecatapi.com/v1/breeds`
+- Cat images: `https://api.thecatapi.com/v1/images/:id`
+- Dog images: `https://dog.ceo/api/breed/:breed/images/random`
+- Dog breed descriptions: `https://en.wikipedia.org/api/rest_v1/page/summary/:title`
 
-If these endpoints are unavailable, it falls back to local mock data in development.
+If these external services are unavailable or rate-limited, it falls back to local mock data.

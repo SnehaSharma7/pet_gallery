@@ -16,11 +16,19 @@ interface SelectionState {
   selectedIds: Set<string>;
 }
 
+/**
+ * Union of all selection-related actions dispatched to the reducer.
+ * Using discriminated unions gives TypeScript exhaustive action checking.
+ */
 type SelectionAction =
   | { type: 'TOGGLE'; id: string }
   | { type: 'SELECT_ALL'; ids: string[] }
   | { type: 'CLEAR' };
 
+/**
+ * Pure reducer for selection state. Returns a new state object on every
+ * action so React can detect changes via reference equality.
+ */
 function selectionReducer(
   state: SelectionState,
   action: SelectionAction
@@ -57,8 +65,10 @@ interface SelectionContextValue {
 
 const SelectionContext = createContext<SelectionContextValue | null>(null);
 
+/** localStorage key used to persist the selection across page reloads. */
 const STORAGE_KEY = 'pet-gallery-selection';
 
+/** Deserialises the stored selection from localStorage, returning an empty Set on failure. */
 function loadFromStorage(): Set<string> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);

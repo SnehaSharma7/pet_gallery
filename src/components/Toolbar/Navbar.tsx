@@ -34,16 +34,23 @@ const Nav = styled.header`
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  height: 60px;
-  background: ${({ theme }) => theme.colors.surface};
-  box-shadow: 0 1px 0 ${({ theme }) => theme.colors.border};
+  height: 64px;
+  background: linear-gradient(180deg, rgba(255, 253, 250, 0.95), rgba(255, 253, 250, 0.9));
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow: 0 8px 22px rgba(31, 42, 55, 0.06);
 `;
 
 const Brand = styled(Link)`
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.primary};
-  letter-spacing: -0.5px;
+  letter-spacing: -0.6px;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
 `;
 
 const Links = styled.nav`
@@ -53,7 +60,7 @@ const Links = styled.nav`
 `;
 
 const NavLink = styled(Link)<{ $active: boolean }>`
-  padding: 6px 14px;
+  padding: 8px 14px;
   border-radius: ${({ theme }) => theme.radii.sm};
   font-size: 14px;
   font-weight: ${({ $active }) => ($active ? 600 : 400)};
@@ -61,11 +68,12 @@ const NavLink = styled(Link)<{ $active: boolean }>`
     $active ? theme.colors.primary : theme.colors.text};
   background: ${({ theme, $active }) =>
     $active ? theme.colors.background : 'transparent'};
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
 
   &:hover {
     background: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.primary};
+    transform: translateY(-1px);
   }
 `;
 
@@ -81,4 +89,5 @@ const Badge = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 8px 20px rgba(15, 118, 110, 0.28);
 `;

@@ -1,7 +1,9 @@
 import type { Pet, SortOption } from '../types/Pet';
 
 /**
- * Filters pets by search query against title and description (case-insensitive).
+ * Filters an array of pets by a free-text query.
+ * The match is case-insensitive and checked against both title and description.
+ * An empty / whitespace-only query returns the original array unchanged.
  */
 export function filterPets(pets: Pet[], query: string): Pet[] {
   const q = query.toLowerCase().trim();
@@ -14,8 +16,14 @@ export function filterPets(pets: Pet[], query: string): Pet[] {
 }
 
 /**
- * Sorts an array of pets by the given sort option.
- * Returns a new array — does not mutate the original.
+ * Sorts an array of pets by the given SortOption.
+ * Returns a *new* array — the original is never mutated.
+ *
+ * Supported options:
+ *  - 'name-asc'     → alphabetical A → Z
+ *  - 'name-desc'    → alphabetical Z → A
+ *  - 'date-newest'  → most recently created first
+ *  - 'date-oldest'  → oldest created first
  */
 export function sortPets(pets: Pet[], sort: SortOption): Pet[] {
   const copy = [...pets];
@@ -38,7 +46,11 @@ export function sortPets(pets: Pet[], sort: SortOption): Pet[] {
 }
 
 /**
- * Formats bytes into a human-readable string (KB / MB).
+ * Formats a byte count into a concise human-readable string.
+ * Values under 1 MB are displayed in KB; at or above 1 MB in MB.
+ *
+ * @example formatFileSize(512000) // "500 KB"
+ * @example formatFileSize(2097152) // "2.0 MB"
  */
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
@@ -46,7 +58,12 @@ export function formatFileSize(bytes: number): string {
 }
 
 /**
- * Paginates an array. Returns the slice for the given 1-based page.
+ * Extracts a single page from a sorted/filtered array.
+ * Pages are 1-based: page 1 returns items 0..pageSize-1.
+ *
+ * @param items    - The full ordered array to paginate.
+ * @param page     - 1-based page index.
+ * @param pageSize - Number of items per page.
  */
 export function paginateArray<T>(items: T[], page: number, pageSize: number): T[] {
   const start = (page - 1) * pageSize;

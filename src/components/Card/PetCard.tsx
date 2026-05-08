@@ -1,5 +1,6 @@
-import styled, { css } from 'styled-components';
-import type { MouseEvent } from 'react';
+import styled, { css, keyframes } from 'styled-components';
+import { useState } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 import type { Pet } from '../../types/Pet';
 import { useSelection } from '../../context/SelectionContext';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +13,7 @@ export function PetCard({ pet }: CardProps) {
   const { isSelected, toggle } = useSelection();
   const selected = isSelected(pet.id);
   const navigate = useNavigate();
+  const [loaded, setLoaded] = useState(false);
 
   const handleClick = (e: MouseEvent) => {
     // Clicking the checkbox area toggles selection; anywhere else navigates
@@ -19,7 +21,7 @@ export function PetCard({ pet }: CardProps) {
     navigate(`/pets/${pet.id}`);
   };
 
-  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
     toggle(pet.id);
   };
@@ -33,7 +35,13 @@ export function PetCard({ pet }: CardProps) {
   return (
     <CardWrapper $selected={selected} onClick={handleClick} role="article" aria-label={pet.title}>
       <ImageWrapper>
-        <img src={pet.imageUrl} alt={pet.title} loading="lazy" />
+        <CardImage
+          src={pet.imageUrl}
+          alt={pet.title}
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+          $loaded={loaded}
+        />
         <CheckboxOverlay data-checkbox>
           <HiddenCheckbox
             type="checkbox"
@@ -71,13 +79,14 @@ const CardWrapper = styled.article<{ $selected: boolean }>`
 
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardHover};
-    transform: translateY(-3px);
+    transform: translateY(-5px);
   }
 
   ${({ $selected, theme }) =>
     $selected &&
     css`
       background: ${theme.colors.background};
+      box-shadow: 0 14px 30px rgba(15, 118, 110, 0.16);
     `}
 `;
 
@@ -86,6 +95,7 @@ const ImageWrapper = styled.div`
   width: 100%;
   padding-top: 75%; /* 4:3 ratio */
   background: ${({ theme }) => theme.colors.border};
+  overflow: hidden;
 
   img {
     position: absolute;
@@ -93,7 +103,43 @@ const ImageWrapper = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform: scale(1.035);
+    transition: transform 0.45s ease;
   }
+
+  ${CardWrapper}:hover & img {
+    transform: scale(1.075);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.2) 40%, transparent 70%);
+    transform: translateX(-140%);
+    transition: transform 0.6s ease;
+    pointer-events: none;
+  }
+
+  ${CardWrapper}:hover &::after {
+    transform: translateX(140%);
+  }
+`;
+
+const revealImage = keyframes`
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+`;
+
+const CardImage = styled.img<{ $loaded: boolean }>`
+  opacity: ${({ $loaded }) => ($loaded ? 1 : 0.15)};
+  animation: ${({ $loaded }) => ($loaded ? revealImage : 'none')} 260ms ease-out;
 `;
 
 const CheckboxOverlay = styled.div`
@@ -149,11 +195,11 @@ const SelectedBadge = styled.span`
 `;
 
 const CardBody = styled.div`
-  padding: 14px 16px 16px;
+  padding: 14px 16px 18px;
 `;
 
 const CardTitle = styled.h3`
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 4px;
   color: ${({ theme }) => theme.colors.text};
@@ -163,7 +209,7 @@ const CardTitle = styled.h3`
 `;
 
 const CardDesc = styled.p`
-  font-size: 13px;
+  font-size: 13.5px;
   color: ${({ theme }) => theme.colors.textMuted};
   margin-bottom: 8px;
   display: -webkit-box;
@@ -173,6 +219,7 @@ const CardDesc = styled.p`
 `;
 
 const CardDate = styled.span`
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.textMuted};
 `;

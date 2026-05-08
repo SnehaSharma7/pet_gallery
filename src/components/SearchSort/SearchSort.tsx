@@ -44,6 +44,18 @@ const Bar = styled.div`
   gap: 12px;
   flex-wrap: wrap;
   margin-bottom: 20px;
+  animation: controlsIn 280ms ease-out;
+
+  @keyframes controlsIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 `;
 
 const SearchWrapper = styled.div`
@@ -66,14 +78,15 @@ const SearchInput = styled.input`
   padding: 10px 14px 10px 36px;
   border: 1.5px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.sm};
-  background: ${({ theme }) => theme.colors.surface};
+  background: rgba(255, 253, 250, 0.94);
   color: ${({ theme }) => theme.colors.text};
   font-size: 14px;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
+    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
   }
 
   &::placeholder {
@@ -85,14 +98,15 @@ const SortSelect = styled.select`
   padding: 10px 14px;
   border: 1.5px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.sm};
-  background: ${({ theme }) => theme.colors.surface};
+  background: rgba(255, 253, 250, 0.94);
   color: ${({ theme }) => theme.colors.text};
   font-size: 14px;
   cursor: pointer;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary};
+    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
   }
 `;
